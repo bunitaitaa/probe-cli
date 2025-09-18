@@ -1,6 +1,3 @@
-Siap, saya terjemahkan dan rapikan ke dalam bahasa Indonesia. Jadi README-nya tetap bergaya proyek open source, tapi dengan catatan instalasi Debian/Ubuntu + troubleshooting yang sudah kamu alami.
-
----
 
 ````markdown
 <!--
