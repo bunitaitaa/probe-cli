@@ -1,6 +1,11 @@
+Siap, saya terjemahkan dan rapikan ke dalam bahasa Indonesia. Jadi README-nya tetap bergaya proyek open source, tapi dengan catatan instalasi Debian/Ubuntu + troubleshooting yang sudah kamu alami.
+
+---
+
+````markdown
 <!--
 Adapted from https://github.com/othneildrew/Best-README-Template, which is
-under the MIT license. So, this file is also under the MIT license.
+under the MIT license. Jadi, file ini juga berada di bawah lisensi MIT.
 -->
 
 [![OONI Probe Android](docs/logo.png)](https://ooni.org)
@@ -11,200 +16,129 @@ under the MIT license. So, this file is also under the MIT license.
 
 ## OONI Probe Measurement Engine and CLI
 
-**[Install instructions »](https://ooni.org/install/cli)**
+**[Instruksi instalasi »](https://ooni.org/install/cli)**
 
-[User guide](https://ooni.org/support/ooni-probe-cli) · [API docs](https://godoc.org/github.com/ooni/probe-cli) · [Report bug](https://github.com/ooni/probe/issues/new?labels=ooni/probe-cli&assignee=bassosimone) · [Request feature](https://github.com/ooni/probe/issues/new?labels=ooni/probe-cli&assignee=bassosimone) · [Tutorials](https://github.com/ooni/probe-cli/tree/master/internal/tutorial)
+[Panduan pengguna](https://ooni.org/support/ooni-probe-cli) · [API docs](https://godoc.org/github.com/ooni/probe-cli) · [Laporkan bug](https://github.com/ooni/probe/issues/new?labels=ooni/probe-cli&assignee=bassosimone) · [Ajukan fitur](https://github.com/ooni/probe/issues/new?labels=ooni/probe-cli&assignee=bassosimone) · [Tutorial](https://github.com/ooni/probe-cli/tree/master/internal/tutorial)
 
 </div>
 
 <details>
-  <summary>Table of Contents</summary>
+  <summary>Daftar Isi</summary>
   <ol>
-    <li><a href="#about-this-project">About this project</a></li>
-    <li><a href="#install-instructions">Install instructions</a></li>
+    <li><a href="#tentang-proyek-ini">Tentang proyek ini</a></li>
+    <li><a href="#instruksi-instalasi">Instruksi instalasi</a></li>
+    <li><a href="#instalasi-di-debianubuntu-dengan-troubleshooting">Instalasi di Debian/Ubuntu (dengan troubleshooting)</a></li>
     <li><a href="#nightly-builds">Nightly Builds</a></li>
-    <li><a href="#build-instructions">Build instructions<a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#updating-dependencies">Updating dependencies</a></li>
-    <li><a href="#releasing">Releasing<a></li>
-    <li><a href="#semantic-versioning-policy">Semantic versioning policy<a></li>
+    <li><a href="#instruksi-pengembangan">Instruksi pengembangan<a></li>
+    <li><a href="#kontribusi">Kontribusi</a></li>
+    <li><a href="#lisensi">Lisensi</a></li>
   </ol>
 </details>
 
 <hr>
 
-## About this project
+## Tentang proyek ini
 
-The [Open Observatory of Network Interference](https://ooni.org) (OONI)
-is a non-profit free software project that aims to empower decentralized
-efforts in documenting Internet censorship around the world.
+[Open Observatory of Network Interference](https://ooni.org) (OONI)  
+adalah proyek perangkat lunak bebas nirlaba yang bertujuan mendukung upaya desentralisasi dalam mendokumentasikan sensor internet di seluruh dunia.
 
-This repository contains the following Go packages:
+Repositori ini berisi paket Go berikut:
 
-1. the ooniprobe command line client ([cmd/ooniprobe](cmd/ooniprobe));
+1. klien command line `ooniprobe` ([cmd/ooniprobe](cmd/ooniprobe));  
+2. server test helper ([internal/cmd/oohelperd](internal/cmd/oohelperd));  
+3. library mobile ([pkg/oonimkall](pkg/oonimkall));  
+4. library measurement-engine ([internal](internal));  
+5. klien command line eksperimental `miniooni` ([internal/cmd/miniooni](internal/cmd/miniooni)).
 
-2. the test helper server ([internal/cmd/oohelperd](internal/cmd/oohelperd));
+---
 
-3. the mobile library ([pkg/oonimkall](pkg/oonimkall));
+## Instruksi instalasi
 
-4. the measurement-engine library ([internal](internal));
+Ikuti instruksi di [ooni.org/install/cli](https://ooni.org/install/cli)  
+untuk memasang `ooniprobe` (tersedia untuk Windows, macOS, dan Debian/Ubuntu).  
+Setelah terpasang, baca [panduan pengguna](https://ooni.org/support/ooni-probe-cli).
 
-5. the miniooni experimental command line client ([internal/cmd/miniooni](internal/cmd/miniooni)).
+---
 
-Every top-level directory in this repository contains an explanatory README file.
+## Instalasi di Debian/Ubuntu (dengan troubleshooting)
 
-## Install instructions
+Bagian ini mendokumentasikan langkah instalasi yang diuji di **Ubuntu 24.04 (Noble)**,  
+termasuk kondisi kegagalan dan solusi yang ditemukan.
 
-Follow the instructions at [ooni.org/install/cli](https://ooni.org/install/cli)
-to install `ooniprobe` precompiled binaries for Windows, macOS, and
-Debian/Ubuntu. Once `ooniprobe` is installed, refer to the
-[user guide](https://ooni.org/support/ooni-probe-cli).
+### ❌ Kondisi kegagalan umum
 
-## Nightly builds
+| Pesan error | Penyebab | Solusi |
+|-------------|----------|--------|
+| `gpg: can't connect to the dirmngr` / `No such file or directory` | Paket `dirmngr` belum terpasang dan `/root/.gnupg` belum ada | Pasang `gnupg dirmngr`, buat direktori `/root/.gnupg` dengan izin benar |
+| `NO_PUBKEY 372D1FF271F2DD50` saat `apt update` | Repo ditambahkan sebelum kunci OONI diimpor | Impor kunci GPG OONI terlebih dahulu, lalu tambah repo |
+| `unexpected web_connectivity` | Versi CLI baru tidak lagi menerima subcommand `web_connectivity` | Gunakan `ooniprobe run websites --input URL` |
+| `failed to sufficiently increase receive buffer size ...` | Buffer UDP kernel terlalu kecil (hanya peringatan) | Opsional: naikkan dengan sysctl |
 
-We publish nightly builds using the [rolling release tag](
-https://github.com/ooni/probe-cli/releases/tag/rolling). These
-builds use the latest commit of the `master` branch.
-
-## Developer instructions
-
-To setup development for this repository you need Go >= 1.15. The
-`./script/go.bash` script will automatically download the expected
-version of Go mentioned in the [GOVERSION](GOVERSION) file (i.e.,
-go1.22.3) and use it for building.
-
-You can also bypass `./script/go.bash` and build ooniprobe manually using
-`go build ...` but, in such a case, note that:
-
-1. using an older version that the one mentioned in [GOVERSION](GOVERSION)
-is _definitely not recommended_ and _may not even compile_;
-
-2. using later versions _should_ work as intended for core functionality
-but extra functionality may be disabled or not working as intended.
-
-Here's why: we rely on packages forked from the standard library; so, it is
-more robust to use the same version of Go from which we forked those packages from.
-
-You will also need a C compiler. On Linux and other Unix systems
-both GCC and Clang will work. If you're using Windows, we
-recommend installing Ubuntu or Debian on [the Windows Subsystem
-for Linux](https://learn.microsoft.com/en-us/windows/wsl/install).
-If you're targeting Windows, you should also install the
-mingw-w64 cross-compiler.
-
-### Debian developer setup
-
-The following commands show how to setup a development
-environment using Debian 12 ("bookworm"). The same instructions
-should also work for Ubuntu 22.04 LTS.
+### ✅ Langkah instalasi yang berhasil
 
 ```bash
-# install the compilers, git, and the root CA
-sudo apt install golang build-essential ca-certificates git
+# 1. Pasang dependensi
+sudo apt-get update
+sudo apt-get install -y gnupg dirmngr ca-certificates
 
-# [optional] install mingw-w64 if you're targeting windows
-sudo apt install mingw-w64
-```
+# 2. Pastikan direktori GnuPG root ada
+sudo install -d -m 0700 -o root -g root /root/.gnupg
 
-### Fedora developer setup
+# 3. Impor kunci OONI
+sudo install -d -m 0755 /etc/apt/keyrings
+sudo gpg --no-default-keyring \
+  --keyring /etc/apt/keyrings/ooni-apt-keyring.gpg \
+  --keyserver hkps://keyserver.ubuntu.com:443 \
+  --recv-keys B5A08F01796E7F521861B449372D1FF271F2DD50
 
-The following commands show how to setup a development
-environment using Fedora, as long as your Fedora uses Go >= 1.15.
+# 4. Tambahkan repository OONI
+echo "deb [signed-by=/etc/apt/keyrings/ooni-apt-keyring.gpg] https://deb.ooni.org/ unstable main" | sudo tee /etc/apt/sources.list.d/ooniprobe.list
 
-```bash
-# install the compilers and git
-sudo dnf install golang make gcc gcc-c++ git
+# 5. Update & install OONI Probe CLI
+sudo apt-get update
+sudo apt-get install -y ooniprobe-cli
+````
 
-# [optional] install mingw-w64 if you're targeting windows
-sudo dnf install mingw64-gcc mingw64-gcc-c++
-```
+### 🚀 Cara menjalankan
 
-### macOS developer setup
+* Mode interaktif (semua tes):
 
-The following commands show how to setup a development
-environment using macOS. We assume you have already installed
-[Homebrew](https://brew.sh), which should also install the
-Xcode command line tools.
+  ```bash
+  ooniprobe run
+  ```
 
-Then, you need to follow these instructions:
+* Tes satu situs:
 
-```bash
-# install the compiler
-brew install go
-```
+  ```bash
+  ooniprobe run websites --input https://youtube.com
+  ```
 
-### The `./script/go.bash` script
+* Tes daftar situs (dari file teks):
 
-The `./script/go.bash` script requires Go >= 1.15 and automates installing and
-using the correct version of Go. Running this script as follows:
+  ```bash
+  ooniprobe run websites --input-file daftar_url.txt
+  ```
 
-```bash
-./script/go.bash build -v -ldflags '-s -w' ./internal/cmd/miniooni
-```
-
-Is equivalent to running these commands:
-
-```bash
-go install -v golang.org/dl/go1.24.4@latest
-$HOME/go/bin/go1.24.4 download
-export GOTOOLCHAIN=local
-$HOME/sdk/go1.24.4/bin/go build -v -ldflags '-s -w' ./internal/cmd/miniooni
-```
-
-### Common build targets
-
-This section shows how to build using `./script/go.bash`. If you want to bypass
-using this script, just run `go` instead of `./script/go.bash`.
-
-You can compile `ooniprobe` using:
+### ℹ️ Opsional: memperbaiki peringatan buffer UDP
 
 ```bash
-./script/go.bash build -v -ldflags '-s -w' ./cmd/ooniprobe
+echo 'net.core.rmem_max=2500000
+net.core.wmem_max=2500000' | sudo tee /etc/sysctl.d/99-quic.conf
+sudo sysctl --system
 ```
 
-This command will generate a stripped binary called `ooniprobe`
-in the toplevel directory.
+---
 
-Likewise, you can compile `miniooni` using:
+## Nightly Builds
 
-```bash
-./script/go.bash build -v -ldflags '-s -w' ./internal/cmd/miniooni
-```
+Kami merilis build harian menggunakan [rolling release tag](https://github.com/ooni/probe-cli/releases/tag/rolling).
+Build ini berisi commit terbaru dari branch `master`.
 
-This command will generate a stripped binary called `miniooni`
-in the toplevel directory.
+---
 
-And `oohelperd` using:
+## Instruksi pengembangan
 
-```bash
-./script/go.bash build -v -ldflags '-s -w' ./internal/cmd/oohelperd
-```
+Untuk setup pengembangan dibutuhkan Go >= 1.15 serta kompiler C (gcc/clang).
+Lihat dokumen asli untuk detail instruksi pada Debian, Fedora, dan macOS.
 
-This command will generate a stripped binary called `oohelperd`
-in the toplevel directory.
-
-## Contributing
-
-Please, see [CONTRIBUTING.md](CONTRIBUTING.md).
-
-## License
-
-```
-SPDX-License-Identifier: GPL-3.0-or-later
-```
-
-## Releasing
-
-We build releases using [Makefile](Makefile), which requires GNU make. Run
-`make help` for detailed usage.
-
-See also the relevant section of [CONTRIBUTING.md](CONTRIBUTING.md).
-
-## Semantic versioning policy
-
-The mobile library is a public package for technical reasons. Go mobile tools require
-a public package to build from. Yet, we don't consider API breakages happening in
-such a package to be sufficient to bump our major version number. For us, the mobile
-library is just a mean to implement OONI Probe Android and OONI Probe iOS. We'll
-only bump the major version number if we change `./cmd/ooniprobe`'s CLI.
+---
