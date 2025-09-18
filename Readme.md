@@ -1,10 +1,4 @@
 
-````markdown
-<!--
-Adapted from https://github.com/othneildrew/Best-README-Template, which is
-under the MIT license. Jadi, file ini juga berada di bawah lisensi MIT.
--->
-
 [![OONI Probe Android](docs/logo.png)](https://ooni.org)
 
 <div align="center">
